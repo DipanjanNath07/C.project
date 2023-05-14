@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_PRODUCTS 100
+
+typedef struct {
+    char name[50];
+    int quantity;
+    double price;
+    int sold;
+} Product;
+
+Product inventory[MAX_PRODUCTS];
+int numProducts = 0;
+
+void addProduct() {
+    if (numProducts >= MAX_PRODUCTS) {
+        printf("Inventory is full. Cannot add more products.\n");
+        return;
+    }
+
+    Product newProduct;
+    printf("Enter product name: ");
+    scanf("%s", newProduct.name);
+    printf("Enter product quantity: ");
+    scanf("%d", &newProduct.quantity);
+    printf("Enter product price: ");
+    scanf("%lf", &newProduct.price);
+    newProduct.sold = 0;
+
+    inventory[numProducts] = newProduct;
+    numProducts++;
+
+    printf("Product added successfully.\n");
+}
+
+void sellProduct() {
+    char productName[50];
+    printf("Enter product name to sell: ");
+    scanf("%s", productName);
+
+    int i;
+    for (i = 0; i < numProducts; i++) {
+        if (strcmp(inventory[i].name, productName) == 0) {
+            int quantity;
+            printf("Enter quantity to sell: ");
+            scanf("%d", &quantity);
+
+            if (quantity <= inventory[i].quantity) {
+                inventory[i].quantity -= quantity;
+                inventory[i].sold += quantity;
+                printf("Sold %d units of %s.\n", quantity, inventory[i].name);
+            } else {
+                printf("Insufficient stock for sale.\n");
+            }
+
+            return;
+        }
+    }
+
+    printf("Product not found.\n");
+}
+
+void generateReport() {
+    printf("Product Inventory Report\n");
+    printf("========================\n");
+    printf("%-20s %-10s %-10s %-10s\n", "Product", "Quantity", "Price", "Sold");
+    
+    int i;
+    for (i = 0; i < numProducts; i++) {
+        printf("%-20s %-10d %-10.2lf %-10d\n", inventory[i].name, inventory[i].quantity, inventory[i].price, inventory[i].sold);
+    }
+}
+
+int main() {
+    int choice;
+
+    do {
+        printf("\nInventory Management System\n");
+        printf("===========================\n");
+        printf("1. Add Product\n");
+        printf("2. Sell Product\n");
+        printf("3. Generate Report\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addProduct();
+                break;
+            case 2:
+                sellProduct();
+                break;
+            case 3:
+                generateReport();
+                break;
+            case 4:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 4);
+
+    return 0;
+}
